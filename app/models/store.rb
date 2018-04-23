@@ -100,7 +100,7 @@ class Store < ApplicationRecord
       @doc.xpath('//Folder/Placemark').remove
 
       layer_name = @doc.xpath('//Folder/name').first
-      layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{Store.all.count}店舗"
+      layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{Store.where(area: area).count}店舗"
 
       Store.where(area: area).find_each do |store|
         # TODO: 店舗URLもマップに追加したい
