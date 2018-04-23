@@ -50,7 +50,7 @@ class Store < ApplicationRecord
 
       time = Time.now
 
-      ActiveRecord::Base.connection.disconnect!
+      ActiveRecord::Base.connection.close
       Parallel.each(latitude_array, in_processes: 2) do |latitude|
         Parallel.each(longitude_array, in_processes: 2) do |longitude|
           Rails.application.executor.wrap do
@@ -87,6 +87,7 @@ class Store < ApplicationRecord
           end
         end
       end
+      ActiveRecord::Base.connection.reconnect!
     end
 
     def parse_and_edit_kml(area)
