@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml>
+  <Document>
+    <name>東京UberESTS全店舗マップ presented by 赤チャリ(@redcycle_ )</name>
+    <description><![CDATA[赤チャリ(@redcycle_ )が作った東京UberESTS全店舗マップです。招待コード「yr8kg」で登録、30回配達で6千円お振込します❗<br>https://get.uber.com/p/eats-courier/?invite_code=yr8kg<br><br>■UberEATSの注文を考えている方へ<br>「eats-mp6dxl」を入力で、初回注文が1,000円OFF❗<br>2回目も1,000円OFF❗<br><br>■UberEATSの配達員の登録を考えている方へ<br>【招待コードyr8kg】UberEATS配達員に登録、30回配達で6千円キャッシュバックします！配達員の登録方法と流れを解説！ - 赤チャリ(UberEATS配達中)<br>http://redcycle.hatenablog.com/entry/2017/09/09/164905]]></description>
+    <Style id="icon-1739-0288D1-normal">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-1.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1739-0288D1-highlight">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-1.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1739-0288D1">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1739-0288D1-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1739-0288D1-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name></name>
+    </Folder>
+  </Document>
+</kml>
