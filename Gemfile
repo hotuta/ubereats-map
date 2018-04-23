@@ -30,8 +30,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'capybara'
 gem 'selenium-webdriver'
+gem 'chromedriver-helper'
 gem 'rest-client'
-# gem 'archive-zip'
+gem 'parallel'
+gem 'archive-zip'
 
 gem 'activerecord-import'
 gem 'clockwork'
