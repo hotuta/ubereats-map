@@ -17,11 +17,11 @@ class Store < ApplicationRecord
 
   def self.edit_osaka_mymaps
     # FIXME: エリアマップが公開されたら修正する
-    @latitude_max = "34.757389"
-    @latitude_min = "34.657389"
+    @latitude_max = "34.757389".to_f
+    @latitude_min = "34.657389".to_f
 
-    @longitude_max = "135.588139"
-    @longitude_min = "135.448139"
+    @longitude_max = "135.588139".to_f
+    @longitude_min = "135.448139".to_f
 
     get_stores("Osaka")
     parse_and_edit_kml("Osaka")
