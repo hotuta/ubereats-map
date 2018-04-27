@@ -50,37 +50,39 @@ class Store < ApplicationRecord
 
       time = Time.now
 
-      Parallel.each(latitude_array, in_processes: 2) do |latitude|
-        Parallel.each(longitude_array, in_processes: 2) do |longitude|
-          Rails.application.executor.wrap do
-            sleep 2
+      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+        Parallel.each(latitude_array, in_processes: 2) do |latitude|
+          Parallel.each(longitude_array, in_processes: 2) do |longitude|
+            Rails.application.executor.wrap do
+              sleep 2
 
-            predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions') {|predictions_response| predictions_response}
-            body = {targetLocation: {latitude: latitude, longitude: longitude}, feedTypes: ["STORE", "SEE_ALL_STORES"]}
-            header = {x_csrf_token: predictions_res.headers[:x_csrf_token], content_type: 'application/json', Connection: 'keep-alive', cookies: predictions_res.cookies}
-            res = RestClient.post('https://www.ubereats.com/rtapi/eats/v1/bootstrap-eater', body.to_json, header) {|response| response}
+              predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions') {|predictions_response| predictions_response}
+              body = {targetLocation: {latitude: latitude, longitude: longitude}, feedTypes: ["STORE", "SEE_ALL_STORES"]}
+              header = {x_csrf_token: predictions_res.headers[:x_csrf_token], content_type: 'application/json', Connection: 'keep-alive', cookies: predictions_res.cookies}
+              res = RestClient.post('https://www.ubereats.com/rtapi/eats/v1/bootstrap-eater', body.to_json, header) {|response| response}
 
-            json = res.body
-            hash = JSON.parse(json)
-            next if hash["marketplace"]["feed"].empty? rescue nil
-            parsed = hash["marketplace"]["feed"]["storesMap"] rescue nil
-            next if parsed.empty? rescue nil
-            next if parsed.nil?
+              json = res.body
+              hash = JSON.parse(json)
+              next if hash["marketplace"]["feed"].empty? rescue nil
+              parsed = hash["marketplace"]["feed"]["storesMap"] rescue nil
+              next if parsed.empty? rescue nil
+              next if parsed.nil?
 
-            stores = []
-            parsed.each.with_index(1) do |store|
-              stores_hash = store[1]
-              store = Store.new
-              store.area = area
-              store.url = "https://www.ubereats.com/stores/#{stores_hash["uuid"]}"
-              store.name = stores_hash["title"].gsub(/'/, "''")
-              store.coordinates = "#{stores_hash["location"]["latitude"]},#{stores_hash["location"]["longitude"]}"
-              store.latitude = stores_hash["location"]["latitude"]
-              store.longitude = stores_hash["location"]["longitude"]
-              store.registered_at = time
-              stores << store
+              stores = []
+              parsed.each.with_index(1) do |store|
+                stores_hash = store[1]
+                store = Store.new
+                store.area = area
+                store.url = "https://www.ubereats.com/stores/#{stores_hash["uuid"]}"
+                store.name = stores_hash["title"].gsub(/'/, "''")
+                store.coordinates = "#{stores_hash["location"]["latitude"]},#{stores_hash["location"]["longitude"]}"
+                store.latitude = stores_hash["location"]["latitude"]
+                store.longitude = stores_hash["location"]["longitude"]
+                store.registered_at = time
+                stores << store
+              end
+              Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: [:name, :coordinates, :latitude, :longitude, :registered_at]}
             end
-            Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: [:name, :coordinates, :latitude, :longitude, :registered_at]}
           end
         end
       end
