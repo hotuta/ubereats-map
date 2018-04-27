@@ -50,7 +50,6 @@ class Store < ApplicationRecord
 
       time = Time.now
 
-      ActiveRecord::Base.connection.close
       Parallel.each(latitude_array, in_processes: 2) do |latitude|
         Parallel.each(longitude_array, in_processes: 2) do |longitude|
           Rails.application.executor.wrap do
@@ -81,13 +80,10 @@ class Store < ApplicationRecord
               store.registered_at = time
               stores << store
             end
-            ActiveRecord::Base.connection_pool.with_connection do
-              Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: [:name, :coordinates, :latitude, :longitude, :registered_at]}
-            end
+            Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: [:name, :coordinates, :latitude, :longitude, :registered_at]}
           end
         end
       end
-      ActiveRecord::Base.connection.reconnect!
     end
 
     def parse_and_edit_kml(area)
