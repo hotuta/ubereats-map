@@ -15,6 +15,19 @@ class Store < ApplicationRecord
     upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1C8dBMymzR89lByKZFHw4GNEv_4les6-z')
   end
 
+  def self.edit_osaka_mymaps
+    # FIXME: エリアマップが公開されたら修正する
+    @latitude_max = "34.757389"
+    @latitude_min = "34.657389"
+
+    @longitude_max = "135.588139"
+    @longitude_min = "135.448139"
+
+    get_stores("Osaka")
+    parse_and_edit_kml("Osaka")
+    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
+  end
+
   class << self
     private
 

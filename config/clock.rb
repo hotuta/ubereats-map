@@ -10,5 +10,6 @@ module Clockwork
   every(1.hours, 'Store') do
     Store.edit_tokyo_mymaps
     Store.edit_yokohama_mymaps
+    Store.edit_osaka_mymaps
   end
 end
