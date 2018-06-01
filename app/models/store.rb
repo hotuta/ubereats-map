@@ -173,7 +173,7 @@ class Store < ApplicationRecord
     end
 
     def delete_layer(layer_xpath)
-      @session.find(:xpath, layer_xpath, visible: false).click
+      @session.find(:xpath, layer_xpath, visible: false).hover.click
       sleep 10
       @session.find(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).click
       sleep 10
