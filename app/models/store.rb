@@ -176,9 +176,11 @@ class Store < ApplicationRecord
       @session.find(:xpath, layer_xpath, visible: false).hover.click
       sleep 3
       puts "hoge"
-      @session.find(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).hover.click
+      @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
       sleep 10
+      puts "hoge2"
       @session.find(:xpath, "//*[@id='cannot-undo-dialog']/div[3]/button[1]", visible: false).hover.click
+      puts "hoge3"
     end
   end
 end
