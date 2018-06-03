@@ -168,6 +168,8 @@ class Store < ApplicationRecord
       @session.switch_to_frame(:top)
       puts "switch後"
 
+      @session.refresh
+
       # レイヤーを消す
       sleep 15
       delete_layer("//div[@id='ly0-layer-header']/div[3]")
@@ -177,6 +179,7 @@ class Store < ApplicationRecord
     end
 
     def delete_layer(layer_xpath)
+      p @session.all(:xpath, layer_xpath, visible: false)
       @session.find(:xpath, layer_xpath, visible: false).hover.click
       sleep 3
       puts "hoge"
