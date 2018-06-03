@@ -156,7 +156,7 @@ class Store < ApplicationRecord
       doc = Nokogiri::HTML(html)
 
       frame = doc.xpath("/html/body/div/div[2]/iframe").attribute("id").text
-      @session.driver.browser.switch_to.frame frame
+      @session.switch_to_frame frame
 
       filename = 'edit_map.kmz'
       file = File.join(Dir.pwd, filename)
@@ -164,7 +164,7 @@ class Store < ApplicationRecord
 
       sleep 15
       puts "switch前"
-      @session.driver.browser.switch_to.window @session.driver.browser.window_handle
+      @session.switch_to_frame(:top)
       puts "switch後"
 
       # レイヤーを消す
