@@ -176,7 +176,7 @@ class Store < ApplicationRecord
     end
 
     def delete_layer(layer_xpath)
-      @session.all(:xpath, layer_xpath, visible: false).first.hover.click
+      @session.find(:xpath, layer_xpath, visible: false).hover.click
       sleep 3
       puts "hoge"
       @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
