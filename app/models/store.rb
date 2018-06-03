@@ -162,7 +162,10 @@ class Store < ApplicationRecord
       file = File.join(Dir.pwd, filename)
       @session.find(:xpath, "//*[@id='doclist']/div/div[4]/div[2]/div/div[2]/div/div/div[1]/div/div[2]/input[@type='file']", visible: false).send_keys file
 
+      sleep 15
+      puts "switch前"
       @session.driver.browser.switch_to.window @session.driver.browser.window_handle
+      puts "switch後"
 
       # レイヤーを消す
       sleep 15
@@ -173,7 +176,7 @@ class Store < ApplicationRecord
     end
 
     def delete_layer(layer_xpath)
-      @session.find(:xpath, layer_xpath, visible: false).hover.click
+      @session.all(:xpath, layer_xpath, visible: false).first.hover.click
       sleep 3
       puts "hoge"
       @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
