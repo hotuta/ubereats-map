@@ -155,8 +155,9 @@ class Store < ApplicationRecord
       html = @session.driver.browser.page_source
       doc = Nokogiri::HTML(html)
 
-      frame = doc.xpath("/html/body/div/div[2]/iframe").attribute("id").text
-      @session.driver.browser.switch_to.frame frame
+      frame_text = doc.xpath("/html/body/div/div[2]/iframe").attribute("id").text
+      frame = @session.find(:frame, frame_text)
+      @session.switch_to_frame(frame)
 
       filename = 'edit_map.kmz'
       file = File.join(Dir.pwd, filename)
