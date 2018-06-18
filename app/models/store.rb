@@ -29,16 +29,20 @@ class Store < ApplicationRecord
   end
 
   def self.edit_kawasaki_mymaps
-    # FIXME: エリアマップが公開されたら修正する
-    @latitude_max = "34.757389".to_f
-    @latitude_min = "34.657389".to_f
-
-    @longitude_max = "135.588139".to_f
-    @longitude_min = "135.448139".to_f
+    @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
 
     get_stores("Kawasaki")
     parse_and_edit_kml("Kawasaki")
     upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
+  end
+
+  def self.dump_kawasaki_coodinates
+    @prefecture = "神奈川県"
+    @target = "川崎"
+    get_coordinate
+    File.open("kawasaki_coordinates.json", 'w') do |f|
+      JSON.dump(@coordinates, f)
+    end
   end
 
   def self.get_res_to_obj(url, headers)
@@ -47,24 +51,23 @@ class Store < ApplicationRecord
     JSON.parse(json, object_class: OpenStruct).response
   end
 
-  def self.get_extract_cities(prefecture, target)
-    cities = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getCities', prefecture: prefecture}}).location
+  def self.get_extract_cities
+    cities = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getCities', prefecture: @prefecture}}).location
     cities.map do |city_struct|
-      city_struct.city if city_struct.city.start_with?(target)
+      city_struct.city if city_struct.city.start_with?(@target)
     end.compact!
   end
 
   def self.get_coordinate
-    extract_cities = get_extract_cities('神奈川', '川崎市')
-    coordinates = []
-    extract_cities.each do |extract_city|
-      towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getTowns', prefecture: '神奈川県', city: extract_city}}).location
+    @coordinates = []
+    get_extract_cities.each do |extract_city|
+      towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getTowns', prefecture: @prefecture, city: extract_city}}).location
       if towns.count == 400
         hoge = 1
         break
       end
       towns.each do |town|
-        coordinates << [town.x, town.y]
+        @coordinates << [town.x, town.y]
       end
     end
   end
@@ -95,11 +98,18 @@ class Store < ApplicationRecord
       latitude_array = []
       longitude_array = []
 
-      @latitude_min.step(@latitude_max, 0.008) do |latitude|
-        latitude_array << latitude
-      end
-      @longitude_min.step(@longitude_max, 0.008) do |longitude|
-        longitude_array << longitude
+      if @latitude_min
+        @latitude_min.step(@latitude_max, 0.008) do |latitude|
+          latitude_array << latitude
+        end
+        @longitude_min.step(@longitude_max, 0.008) do |longitude|
+          longitude_array << longitude
+        end
+      else
+        @coordinates.each do |latitude, longitude|
+          latitude_array << latitude
+          longitude_array << longitude
+        end
       end
 
       time = Time.now
