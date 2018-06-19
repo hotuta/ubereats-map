@@ -30,7 +30,6 @@ class Store < ApplicationRecord
 
   def self.edit_kawasaki_mymaps
     @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
-
     get_stores("Kawasaki")
     parse_and_edit_kml("Kawasaki")
     upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
