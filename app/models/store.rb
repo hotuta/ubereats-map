@@ -106,9 +106,9 @@ class Store < ApplicationRecord
           longitude_array << longitude
         end
       else
-        @coordinates.each do |latitude, longitude|
-          latitude_array << latitude
-          longitude_array << longitude
+        @coordinates.each do |longitude, latitude|
+          longitude_array << longitude.to_f
+          latitude_array << latitude.to_f
         end
       end
 
