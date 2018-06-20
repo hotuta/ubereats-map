@@ -154,27 +154,30 @@ class Store < ApplicationRecord
     end
 
     def parse_and_edit_kml(area)
-      file = File.read("map/doc.kml")
-      @doc = Nokogiri::XML(file) do |config|
-        config.strict.noblanks
+      Store.where(area: area).find_in_batches(batch_size: 2000).with_index(1) do |group, i|
+        kml_file = "map/doc.kml"
+        file = File.read(kml_file)
+        @doc = Nokogiri::XML(file) do |config|
+          config.strict.noblanks
+        end
+        @doc.remove_namespaces!
+
+        @doc.xpath('//Folder/Placemark').remove
+
+        layer_name = @doc.xpath('//Folder/name').first
+        layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{Store.where(area: area).count}店舗_Part#{i}"
+
+        group.each do |store|
+          # TODO: 店舗URLもマップに追加したい
+          @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-0288D1</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+        end
+
+        f = File.new(kml_file, "w")
+        f << @doc.to_xml
+        f.close
+
+        Archive::Zip.archive("kmz_map/part#{i}_edit_map.kmz", 'map/.')
       end
-      @doc.remove_namespaces!
-
-      @doc.xpath('//Folder/Placemark').remove
-
-      layer_name = @doc.xpath('//Folder/name').first
-      layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{Store.where(area: area).count}店舗"
-
-      Store.where(area: area).find_each do |store|
-        # TODO: 店舗URLもマップに追加したい
-        @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-0288D1</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
-      end
-
-      f = File.new("map/doc.kml", "w")
-      f << @doc.to_xml
-      f.close
-
-      Archive::Zip.archive('edit_map.kmz', 'map/.')
     end
 
     def upload_kmz(map_url)
@@ -189,43 +192,46 @@ class Store < ApplicationRecord
       # FIXME: sleepは暫定措置
       sleep 15
 
+      kmz_files = Dir.glob('kmz_map/*.kmz')
+      kmz_files_count = kmz_files.count
+
       # 既に空のレイヤーが追加されている場合は削除する
-      if @session.has_xpath?("//div[@id='ly1-layer-header']/div[3]")
-        delete_layer("//div[@id='ly1-layer-header']/div[3]")
+      if @session.has_xpath?("//div[@id='ly#{kmz_files_count}-layer-header']/div[3]")
+        delete_layer("//div[@id='ly#{kmz_files_count}-layer-header']/div[3]")
         sleep 10
         @session.visit map_url
       end
 
-      sleep 15
-      @session.find(:id, "map-action-add-layer").click
-      sleep 15
-      @session.find(:id, "ly1-layerview-import-link").click
-      sleep 15
+      kmz_files.each do |filename|
+        @session.find(:id, "map-action-add-layer").click
+        sleep 15
+        @session.find(:id, "ly#{kmz_files_count}-layerview-import-link").click
+        sleep 15
 
-      html = @session.driver.browser.page_source
-      doc = Nokogiri::HTML(html)
+        html = @session.driver.browser.page_source
+        doc = Nokogiri::HTML(html)
 
-      frame_text = doc.xpath("/html/body/div/div[2]/iframe").attribute("id").text
-      frame = @session.find(:frame, frame_text)
-      @session.switch_to_frame(frame)
+        frame_text = doc.xpath("/html/body/div/div[2]/iframe").attribute("id").text
+        frame = @session.find(:frame, frame_text)
+        @session.switch_to_frame(frame)
 
-      filename = 'edit_map.kmz'
-      file = File.join(Dir.pwd, filename)
-      @session.find(:xpath, "//*[@id='doclist']/div/div[4]/div[2]/div/div[2]/div/div/div[1]/div/div[2]/input[@type='file']", visible: false).send_keys file
+        file = File.join(Dir.pwd, filename)
+        @session.find(:xpath, "//*[@id='doclist']/div/div[4]/div[2]/div/div[2]/div/div/div[1]/div/div[2]/input[@type='file']", visible: false).send_keys file
 
-      sleep 15
-      puts "switch前"
-      @session.switch_to_frame(:top)
-      puts "switch後"
+        sleep 15
+        puts "switch前"
+        @session.switch_to_frame(:top)
+        puts "switch後"
 
-      @session.refresh
+        @session.refresh
+        sleep 15
+        # レイヤーを消す
+        delete_layer("//div[@id='ly0-layer-header']/div[3]")
+        sleep 15
+        File.delete file
+      end
 
-      # レイヤーを消す
-      sleep 15
-      delete_layer("//div[@id='ly0-layer-header']/div[3]")
-      sleep 15
       @session.driver.quit
-      File.delete 'edit_map.kmz'
     end
 
     def delete_layer(layer_xpath)
