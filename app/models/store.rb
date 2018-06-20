@@ -32,7 +32,7 @@ class Store < ApplicationRecord
     @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
     get_stores("Kawasaki")
     parse_and_edit_kml("Kawasaki")
-    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
+    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
   end
 
   def self.dump_kawasaki_coodinates
@@ -185,6 +185,8 @@ class Store < ApplicationRecord
         @session.driver.browser.manage.add_cookie d
       end
       @session.visit map_url
+
+      binding.pry
 
       # FIXME: sleepは暫定措置
       sleep 15
