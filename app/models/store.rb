@@ -186,8 +186,6 @@ class Store < ApplicationRecord
       end
       @session.visit map_url
 
-      binding.pry
-
       # FIXME: sleepは暫定措置
       sleep 15
 
