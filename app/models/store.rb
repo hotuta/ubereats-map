@@ -196,16 +196,15 @@ class Store < ApplicationRecord
       kmz_files_count = kmz_files.count
 
       # 既に空のレイヤーが追加されている場合は削除する
-      if @session.has_xpath?("//div[@id='ly#{kmz_files_count}-layer-header']/div[3]")
-        delete_layer("//div[@id='ly#{kmz_files_count}-layer-header']/div[3]")
-        sleep 10
-        @session.visit map_url
-      end
+      @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
+      @delete_has_xpath = @delete_layer_xpath
+      delete_layer_has_xpath
 
       kmz_files.each do |filename|
         @session.find(:id, "map-action-add-layer").click
         sleep 15
-        @session.find(:id, "ly#{kmz_files_count}-layerview-import-link").click
+        layer_count = @session.all(:xpath, "//div[contains(@id, 'layer-header')]").count
+        @session.find(:id, "ly#{layer_count - 1}-layerview-import-link").hover.click
         sleep 15
 
         html = @session.driver.browser.page_source
@@ -226,24 +225,33 @@ class Store < ApplicationRecord
         @session.refresh
         sleep 15
         # レイヤーを消す
-        delete_layer("//div[@id='ly0-layer-header']/div[3]")
-        sleep 15
+        @delete_layer_xpath = "//div[@id='ly0-layer-header']/div[3]"
+        delete_layer_has_xpath
         File.delete file
       end
 
       @session.driver.quit
     end
 
-    def delete_layer(layer_xpath)
-      p @session.all(:xpath, layer_xpath, visible: false)
-      @session.find(:xpath, layer_xpath, visible: false).hover.click
-      sleep 3
-      puts "hoge"
-      @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
-      sleep 10
-      puts "hoge2"
-      @session.find(:xpath, "//*[@id='cannot-undo-dialog']/div[3]/button[1]", visible: false).hover.click
-      puts "hoge3"
+    def delete_layer_has_xpath
+      loop do
+        @session.refresh
+        sleep 15
+        if @session.has_xpath?(@delete_has_xpath)
+          p @session.all(:xpath, @delete_layer_xpath, visible: false)
+          @session.find(:xpath, @delete_layer_xpath, visible: false).hover.click
+          sleep 5
+          puts "hoge"
+          @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
+          sleep 10
+          puts "hoge2"
+          @session.find(:xpath, "//*[@id='cannot-undo-dialog']/div[3]/button[1]", visible: false).hover.click
+          puts "hoge3"
+          sleep 15
+        else
+          break
+        end
+      end
     end
   end
 end
