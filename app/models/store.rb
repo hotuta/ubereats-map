@@ -195,6 +195,8 @@ class Store < ApplicationRecord
       kmz_files = Dir.glob('kmz_map/*.kmz')
       kmz_files_count = kmz_files.count
 
+      puts "KMZファイル#{kmz_files_count}個"
+
       # 既に空のレイヤーが追加されている場合は削除する
       @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
       @delete_has_xpath = @delete_layer_xpath
@@ -238,7 +240,7 @@ class Store < ApplicationRecord
         @session.refresh
         sleep 15
         if @session.has_xpath?(@delete_has_xpath)
-          p @session.all(:xpath, @delete_layer_xpath, visible: false)
+          puts @delete_layer_xpath
           @session.find(:xpath, @delete_layer_xpath, visible: false).hover.click
           sleep 5
           puts "hoge"
