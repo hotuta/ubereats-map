@@ -2,6 +2,7 @@ class Store < ApplicationRecord
   @session = Capybara::Session.new(:chrome)
 
   def self.edit_tokyo_mymaps
+    # https://www.google.com/maps/d/u/0/viewer?mid=1Xuly26goLsPFmF_ehhmefrWdyV8
     get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
     get_stores("Tokyo")
     parse_and_edit_kml("Tokyo")
