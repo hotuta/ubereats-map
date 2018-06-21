@@ -30,8 +30,9 @@ class Store < ApplicationRecord
 
   def self.edit_kawasaki_mymaps
     @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
-    get_stores("Kawasaki")
-    parse_and_edit_kml("Kawasaki")
+    # TODO: DBを分ける
+    get_stores("Tokyo")
+    parse_and_edit_kml("Tokyo")
     upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
   end
 
@@ -147,7 +148,9 @@ class Store < ApplicationRecord
               store.registered_at = time
               stores << store
             end
-            Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: [:name, :coordinates, :latitude, :longitude, :registered_at]}
+
+            columns = Store.column_names - ["id", "url", "created_at", "updated_at"]
+            Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: columns}
           end
         end
       end
