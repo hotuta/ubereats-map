@@ -150,7 +150,9 @@ class Store < ApplicationRecord
             end
 
             columns = Store.column_names - ["id", "url", "created_at", "updated_at"]
-            Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: columns}
+            ActiveRecord::Base.connection_pool.with_connection do
+              Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: columns}
+            end
           end
         end
       end
