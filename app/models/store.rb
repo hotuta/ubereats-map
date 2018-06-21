@@ -203,7 +203,7 @@ class Store < ApplicationRecord
       # 既に空のレイヤーが追加されている場合は削除する
       @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
       @delete_has_xpath = @delete_layer_xpath
-      delete_layer_has_xpath
+      delete_layer_has_xpath if kmz_files_count.present?
 
       kmz_files.each do |filename|
         @session.find(:id, "map-action-add-layer").click
