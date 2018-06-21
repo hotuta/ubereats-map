@@ -203,6 +203,8 @@ class Store < ApplicationRecord
       kmz_files.each do |filename|
         @session.find(:id, "map-action-add-layer").click
         sleep 15
+        @session.refresh
+        sleep 15
         layer_count = @session.all(:xpath, "//div[contains(@id, 'layer-header')]").count
         @session.find(:id, "ly#{layer_count - 1}-layerview-import-link").hover.click
         sleep 15
@@ -222,8 +224,6 @@ class Store < ApplicationRecord
         @session.switch_to_frame(:top)
         puts "switch後"
 
-        @session.refresh
-        sleep 15
         # レイヤーを消す
         @delete_layer_xpath = "//div[@id='ly0-layer-header']/div[3]"
         delete_layer_has_xpath
