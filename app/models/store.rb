@@ -130,6 +130,7 @@ class Store < ApplicationRecord
           res = RestClient.post('https://www.ubereats.com/rtapi/eats/v1/bootstrap-eater', body.to_json, header) {|response| response}
 
           json = res.body
+          next if JSON.parse(json) rescue JSON::ParserError
           hash = JSON.parse(json)
           next if hash["marketplace"]["feed"].empty? rescue nil
           parsed = hash["marketplace"]["feed"]["storesMap"] rescue nil
