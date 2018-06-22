@@ -45,6 +45,7 @@ class Store < ApplicationRecord
       File.open("kawasaki_coordinates.json", 'w') do |f|
         JSON.dump(@coordinates, f)
       end
+      @coordinates = ""
     end
 
     def get_res_to_obj(url, headers)
