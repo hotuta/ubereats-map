@@ -1,80 +1,78 @@
 class Store < ApplicationRecord
   @session = Capybara::Session.new(:chrome)
 
-  def self.edit_tokyo_mymaps
-    # https://www.google.com/maps/d/u/0/viewer?mid=1Xuly26goLsPFmF_ehhmefrWdyV8
-    get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
-    get_stores("Tokyo")
-    parse_and_edit_kml("Tokyo")
-    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1koUCzDuaDiufkHOmH9bmB5lEXOs')
-  end
-
-  def self.edit_yokohama_mymaps
-    get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1BAoMqt-4b8iEEbAIgP_MlqBskEs&forcekml=1'
-    get_stores("Yokohama")
-    parse_and_edit_kml("Yokohama")
-    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1C8dBMymzR89lByKZFHw4GNEv_4les6-z')
-  end
-
-  def self.edit_osaka_mymaps
-    # FIXME: エリアマップが公開されたら修正する
-    @latitude_max = "34.757389".to_f
-    @latitude_min = "34.657389".to_f
-
-    @longitude_max = "135.588139".to_f
-    @longitude_min = "135.448139".to_f
-
-    get_stores("Osaka")
-    parse_and_edit_kml("Osaka")
-    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
-  end
-
-  def self.edit_kawasaki_mymaps
-    @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
-    # TODO: DBを分ける
-    get_stores("Tokyo")
-    parse_and_edit_kml("Tokyo")
-    upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
-  end
-
-  def self.dump_kawasaki_coodinates
-    @prefecture = "神奈川県"
-    @target = "川崎"
-    get_coordinate
-    File.open("kawasaki_coordinates.json", 'w') do |f|
-      JSON.dump(@coordinates, f)
-    end
-  end
-
-  def self.get_res_to_obj(url, headers)
-    res = RestClient.get(url, headers)
-    json = res.body
-    JSON.parse(json, object_class: OpenStruct).response
-  end
-
-  def self.get_extract_cities
-    cities = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getCities', prefecture: @prefecture}}).location
-    cities.map do |city_struct|
-      city_struct.city if city_struct.city.start_with?(@target)
-    end.compact!
-  end
-
-  def self.get_coordinate
-    @coordinates = []
-    get_extract_cities.each do |extract_city|
-      towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getTowns', prefecture: @prefecture, city: extract_city}}).location
-      if towns.count == 400
-        hoge = 1
-        break
-      end
-      towns.each do |town|
-        @coordinates << [town.x, town.y]
-      end
-    end
-  end
-
   class << self
-    private
+    def edit_tokyo_mymaps
+      # https://www.google.com/maps/d/u/0/viewer?mid=1Xuly26goLsPFmF_ehhmefrWdyV8
+      get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
+      get_stores("Tokyo")
+      parse_and_edit_kml("Tokyo")
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1koUCzDuaDiufkHOmH9bmB5lEXOs')
+    end
+
+    def edit_yokohama_mymaps
+      get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1BAoMqt-4b8iEEbAIgP_MlqBskEs&forcekml=1'
+      get_stores("Yokohama")
+      parse_and_edit_kml("Yokohama")
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1C8dBMymzR89lByKZFHw4GNEv_4les6-z')
+    end
+
+    def edit_osaka_mymaps
+      # FIXME: エリアマップが公開されたら修正する
+      @latitude_max = "34.757389".to_f
+      @latitude_min = "34.657389".to_f
+
+      @longitude_max = "135.588139".to_f
+      @longitude_min = "135.448139".to_f
+
+      get_stores("Osaka")
+      parse_and_edit_kml("Osaka")
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
+    end
+
+    def edit_kawasaki_mymaps
+      @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
+      # TODO: DBを分ける
+      get_stores("Tokyo")
+      parse_and_edit_kml("Tokyo")
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
+    end
+
+    def dump_kawasaki_coodinates
+      @prefecture = "神奈川県"
+      @target = "川崎"
+      get_coordinate
+      File.open("kawasaki_coordinates.json", 'w') do |f|
+        JSON.dump(@coordinates, f)
+      end
+    end
+
+    def get_res_to_obj(url, headers)
+      res = RestClient.get(url, headers)
+      json = res.body
+      JSON.parse(json, object_class: OpenStruct).response
+    end
+
+    def get_extract_cities
+      cities = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getCities', prefecture: @prefecture}}).location
+      cities.map do |city_struct|
+        city_struct.city if city_struct.city.start_with?(@target)
+      end.compact!
+    end
+
+    def get_coordinate
+      @coordinates = []
+      get_extract_cities.each do |extract_city|
+        towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getTowns', prefecture: @prefecture, city: extract_city}}).location
+        if towns.count == 400
+          hoge = 1
+          break
+        end
+        towns.each do |town|
+          @coordinates << [town.x, town.y]
+        end
+      end
+    end
 
     def get_maps(map_url)
       map = RestClient.get map_url
