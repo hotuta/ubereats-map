@@ -99,17 +99,19 @@ class Store < ApplicationRecord
       latitude_array = []
       longitude_array = []
 
-      if @latitude_min
+      if @coordinates
+        puts "coordinates"
+        @coordinates.each do |longitude, latitude|
+          longitude_array << longitude.to_f
+          latitude_array << latitude.to_f
+        end
+      else
+        puts "latitude"
         @latitude_min.step(@latitude_max, 0.008) do |latitude|
           latitude_array << latitude
         end
         @longitude_min.step(@longitude_max, 0.008) do |longitude|
           longitude_array << longitude
-        end
-      else
-        @coordinates.each do |longitude, latitude|
-          longitude_array << longitude.to_f
-          latitude_array << latitude.to_f
         end
       end
 
