@@ -36,6 +36,7 @@ class Store < ApplicationRecord
       get_stores("Tokyo")
       parse_and_edit_kml("Tokyo")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
+      @coordinates = ""
     end
 
     def dump_kawasaki_coodinates
@@ -45,7 +46,6 @@ class Store < ApplicationRecord
       File.open("kawasaki_coordinates.json", 'w') do |f|
         JSON.dump(@coordinates, f)
       end
-      @coordinates = ""
     end
 
     def get_res_to_obj(url, headers)
