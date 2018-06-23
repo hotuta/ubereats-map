@@ -1,8 +1,11 @@
 class Store < ApplicationRecord
+  require 'csv'
   @session = Capybara::Session.new(:chrome)
+  @coordinates = []
 
   class << self
     def edit_tokyo_mymaps
+      @coordinates = JSON.load(File.read ("tokyo_coordinates.json")).uniq
       # https://www.google.com/maps/d/u/0/viewer?mid=1Xuly26goLsPFmF_ehhmefrWdyV8
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
       get_stores("Tokyo")
@@ -44,6 +47,23 @@ class Store < ApplicationRecord
       @target = "川崎"
       get_coordinate
       File.open("kawasaki_coordinates.json", 'w') do |f|
+        JSON.dump(@coordinates, f)
+      end
+    end
+
+    def dump_tokyo_coodinates
+      CSV.foreach('tokyo.csv') do |row|
+        row[1] = row[1].gsub(/１|２|３|４|５|６|７|８|９|一ッ橋/, "１" => "一", "２" => "二", "３" => "三", "４" => "四", "５" => "五", "６" => "六", "７" => "七", "８" => "八", "９" => "九", "一ッ橋" => "一ツ橋")
+        towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'suggest', matching: 'suffix', keyword: row[0] + row[1]}}).location
+        towns.each do |town|
+          @coordinates << [town.x, town.y]
+        end
+      end
+
+      @prefecture = "東京都"
+      @target = ""
+      get_coordinate
+      File.open("tokyo_coordinates.json", 'w') do |f|
         JSON.dump(@coordinates, f)
       end
     end
