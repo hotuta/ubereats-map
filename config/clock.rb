@@ -8,9 +8,9 @@ module Clockwork
   end
 
   every(1.hours, 'Store') do
+    Store.edit_kawasaki_mymaps
     Store.edit_tokyo_mymaps
     Store.edit_osaka_mymaps
-    Store.edit_kawasaki_mymaps
     Store.edit_yokohama_mymaps
   end
 end
