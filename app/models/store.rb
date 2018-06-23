@@ -147,6 +147,11 @@ class Store < ApplicationRecord
             store.latitude = stores_hash["location"]["latitude"]
             store.longitude = stores_hash["location"]["longitude"]
             store.registered_at = time
+            if stores_hash["ratingBadge"].present?
+              rating = stores_hash["ratingBadge"]["accessibilityText"]
+              store.review = rating.match(/([0-9]+) reviews./)[1]
+              store.star = rating.match(/(([0-9]\d*|0)(\.\d+)?) out/)[1]
+            end
             stores << store
           end
 
