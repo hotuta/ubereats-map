@@ -120,9 +120,18 @@ class Store < ApplicationRecord
 
       if @coordinates.present?
         puts "coordinates"
-        @coordinates.each do |longitude, latitude|
-          longitude_array << longitude.to_f
-          latitude_array << latitude.to_f
+        if @latitude_min.present?
+          @coordinates.sort.each do |longitude, latitude|
+            if longitude.to_f.between?(@longitude_min, @longitude_max) && latitude.to_f.between?(@latitude_min, @latitude_max)
+              longitude_array << longitude.to_f
+              latitude_array << latitude.to_f
+            end
+          end
+        else
+          @coordinates.sort do |longitude, latitude|
+            longitude_array << longitude.to_f
+            latitude_array << latitude.to_f
+          end
         end
       else
         puts "latitude"
