@@ -128,7 +128,7 @@ class Store < ApplicationRecord
             end
           end
         else
-          @coordinates.sort do |longitude, latitude|
+          @coordinates.sort.each do |longitude, latitude|
             longitude_array << longitude.to_f
             latitude_array << latitude.to_f
           end
