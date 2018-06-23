@@ -152,7 +152,7 @@ class Store < ApplicationRecord
       end
 
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        Parallel.each(bodies, in_processes: 3) do |body|
+        Parallel.each(bodies, in_processes: 4) do |body|
           sleep 2
 
           predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions') {|predictions_response| predictions_response}
