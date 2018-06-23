@@ -217,7 +217,7 @@ class Store < ApplicationRecord
       @delete_has_xpath = @delete_layer_xpath
       delete_layer_has_xpath if kmz_files_count.present?
 
-      kmz_files.each.sort do |filename|
+      kmz_files.sort.each do |filename|
         @session.find(:id, "map-action-add-layer").click
         sleep 15
         @session.refresh
@@ -244,7 +244,6 @@ class Store < ApplicationRecord
         # レイヤーを消す
         @delete_layer_xpath = "//div[@id='ly0-layer-header']/div[3]"
         delete_layer_has_xpath
-        File.delete file
       end
 
       @session.driver.quit
