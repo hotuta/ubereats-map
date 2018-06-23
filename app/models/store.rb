@@ -52,6 +52,9 @@ class Store < ApplicationRecord
     end
 
     def dump_tokyo_coodinates
+      @prefecture = "東京都"
+      @target = ""
+      get_coordinate
       CSV.foreach('tokyo.csv') do |row|
         row[1] = row[1].gsub(/１|２|３|４|５|６|７|８|９|一ッ橋/, "１" => "一", "２" => "二", "３" => "三", "４" => "四", "５" => "五", "６" => "六", "７" => "七", "８" => "八", "９" => "九", "一ッ橋" => "一ツ橋")
         towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'suggest', matching: 'suffix', keyword: row[0] + row[1]}}).location
@@ -59,10 +62,6 @@ class Store < ApplicationRecord
           @coordinates << [town.x, town.y]
         end
       end
-
-      @prefecture = "東京都"
-      @target = ""
-      get_coordinate
       File.open("tokyo_coordinates.json", 'w') do |f|
         JSON.dump(@coordinates, f)
       end
