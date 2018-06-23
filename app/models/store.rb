@@ -216,7 +216,7 @@ class Store < ApplicationRecord
       @delete_has_xpath = @delete_layer_xpath
       delete_layer_has_xpath if kmz_files_count.present?
 
-      kmz_files.each do |filename|
+      kmz_files.each.sort do |filename|
         @session.find(:id, "map-action-add-layer").click
         sleep 15
         @session.refresh
