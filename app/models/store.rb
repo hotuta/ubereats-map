@@ -85,13 +85,15 @@ class Store < ApplicationRecord
       get_extract_cities.each do |extract_city|
         towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getTowns', prefecture: @prefecture, city: extract_city}}).location
         if towns.count == 400
+          puts extract_city
           dead_city << extract_city
         else
           towns.each do |town|
-            @coordinates << [town.x, town.y] unless town.town =~ /階$|三丁目$|四丁目$|五丁目$|六丁目$|七丁目$/
+            @coordinates << [town.x, town.y] unless town.town =~ /階$|二丁目$|三丁目$|四丁目$|五丁目$|六丁目$|七丁目$/
           end
         end
       end
+      p dead_city
     end
 
     def get_maps(map_url)
