@@ -98,7 +98,7 @@ class Store < ApplicationRecord
       latitude_array = []
       longitude_array = []
 
-      if @coordinates
+      if @coordinates.present?
         puts "coordinates"
         @coordinates.each do |longitude, latitude|
           longitude_array << longitude.to_f
