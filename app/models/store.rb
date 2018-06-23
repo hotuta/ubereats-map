@@ -78,7 +78,7 @@ class Store < ApplicationRecord
       cities = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'getCities', prefecture: @prefecture}}).location
       cities.map do |city_struct|
         city_struct.city if city_struct.city.start_with?(@target)
-      end.compact!
+      end.compact
     end
 
     def get_coordinate
@@ -88,9 +88,10 @@ class Store < ApplicationRecord
         if towns.count == 400
           hoge = 1
           break
-        end
-        towns.each do |town|
-          @coordinates << [town.x, town.y]
+        else
+          towns.each do |town|
+            @coordinates << [town.x, town.y]
+          end
         end
       end
     end
