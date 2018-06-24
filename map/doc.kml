@@ -1,9 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml>
   <Document>
-    <name>東京UberESTS全店舗マップ presented by 赤チャリ(@redcycle_ )</name>
-    <description><![CDATA[赤チャリ(@redcycle_ )が作った東京UberESTS全店舗マップです。招待コード「yr8kg」で登録、30回配達で6千円お振込します❗<br>https://get.uber.com/p/eats-courier/?invite_code=yr8kg<br><br>■UberEATSの注文を考えている方へ<br>「eats-mp6dxl」を入力で、初回注文が1,000円OFF❗<br>2回目も1,000円OFF❗<br><br>■UberEATSの配達員の登録を考えている方へ<br>【招待コードyr8kg】UberEATS配達員に登録、30回配達で6千円キャッシュバックします！配達員の登録方法と流れを解説！ - 赤チャリ(UberEATS配達中)<br>http://redcycle.hatenablog.com/entry/2017/09/09/164905]]></description>
-    <Style id="icon-1739-0288D1-normal">
+    <name></name>
+    <Style id="icon-1739-0288D1-nodesc-normal">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-3.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1739-0288D1-nodesc-highlight">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-3.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1739-0288D1-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1739-0288D1-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1739-0288D1-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1739-F57C00-nodesc-normal">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-2.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1739-F57C00-nodesc-highlight">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-2.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1739-F57C00-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1739-F57C00-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1739-F57C00-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1739-FF5252-nodesc-normal">
       <IconStyle>
         <scale>1</scale>
         <Icon>
@@ -13,8 +88,11 @@
       <LabelStyle>
         <scale>0</scale>
       </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
     </Style>
-    <Style id="icon-1739-0288D1-highlight">
+    <Style id="icon-1739-FF5252-nodesc-highlight">
       <IconStyle>
         <scale>1</scale>
         <Icon>
@@ -24,15 +102,18 @@
       <LabelStyle>
         <scale>1</scale>
       </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
     </Style>
-    <StyleMap id="icon-1739-0288D1">
+    <StyleMap id="icon-1739-FF5252-nodesc">
       <Pair>
         <key>normal</key>
-        <styleUrl>#icon-1739-0288D1-normal</styleUrl>
+        <styleUrl>#icon-1739-FF5252-nodesc-normal</styleUrl>
       </Pair>
       <Pair>
         <key>highlight</key>
-        <styleUrl>#icon-1739-0288D1-highlight</styleUrl>
+        <styleUrl>#icon-1739-FF5252-nodesc-highlight</styleUrl>
       </Pair>
     </StyleMap>
     <Folder>
