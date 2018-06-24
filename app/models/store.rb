@@ -199,7 +199,8 @@ class Store < ApplicationRecord
 
     def parse_and_edit_kml(area)
       FileUtils.rm(Dir.glob('kmz_map/*.kmz'))
-      Store.where(area: area, registered_at: [8.days.ago..Time.now]).find_in_batches(batch_size: 2000).with_index(1) do |group, i|
+      stores = Store.where(area: area, registered_at: [8.days.ago..Time.now])
+      stores.find_in_batches(batch_size: 2000).with_index(1) do |group, i|
         kml_file = "map/doc.kml"
         file = File.read(kml_file)
         @doc = Nokogiri::XML(file) do |config|
@@ -210,7 +211,7 @@ class Store < ApplicationRecord
         @doc.xpath('//Folder/Placemark').remove
 
         layer_name = @doc.xpath('//Folder/name').first
-        layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{Store.where(area: area).count}店舗_Part#{i}"
+        layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{stores.count}店舗_Part#{i}"
 
         group.each do |store|
           # TODO: 店舗URLもマップに追加したい
