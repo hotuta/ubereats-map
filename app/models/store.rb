@@ -223,10 +223,10 @@ class Store < ApplicationRecord
             # 中評価
             add_map_to_store(store, "icon-1739-FF5252-nodesc-normal")
           when 4.5..5
-            if store.review < 150
+            if store.review < 200
               # 高評価アンド150未満 icon-1577-FF5252-nodesc-normal
               add_map_to_store(store, "icon-1577-FF5252-nodesc-normal")
-            elsif store.review >= 150
+            elsif store.review >= 200
               # 高評価アンド150評価以上 icon-1502-FF5252-nodesc-highlight
               add_map_to_store(store, "icon-1502-FF5252-nodesc-highlight")
             end
