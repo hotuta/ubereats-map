@@ -1,12 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml>
   <Document>
-    <name></name>
+    <name/>
+    <Style id="icon-1502-FF5252-nodesc-normal">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-5.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1502-FF5252-nodesc-highlight">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-5.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1502-FF5252-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1502-FF5252-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1502-FF5252-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1577-FF5252-nodesc-normal">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-4.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1577-FF5252-nodesc-highlight">
+      <IconStyle>
+        <scale>1</scale>
+        <Icon>
+          <href>images/icon-4.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1577-FF5252-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1577-FF5252-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1577-FF5252-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
     <Style id="icon-1739-0288D1-nodesc-normal">
       <IconStyle>
         <scale>1</scale>
         <Icon>
-          <href>images/icon-3.png</href>
+          <href>images/icon-1.png</href>
         </Icon>
       </IconStyle>
       <LabelStyle>
@@ -20,7 +96,7 @@
       <IconStyle>
         <scale>1</scale>
         <Icon>
-          <href>images/icon-3.png</href>
+          <href>images/icon-1.png</href>
         </Icon>
       </IconStyle>
       <LabelStyle>
@@ -82,7 +158,7 @@
       <IconStyle>
         <scale>1</scale>
         <Icon>
-          <href>images/icon-1.png</href>
+          <href>images/icon-3.png</href>
         </Icon>
       </IconStyle>
       <LabelStyle>
@@ -96,7 +172,7 @@
       <IconStyle>
         <scale>1</scale>
         <Icon>
-          <href>images/icon-1.png</href>
+          <href>images/icon-3.png</href>
         </Icon>
       </IconStyle>
       <LabelStyle>
