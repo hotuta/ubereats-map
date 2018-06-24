@@ -200,7 +200,7 @@ class Store < ApplicationRecord
     def parse_and_edit_kml(area)
       FileUtils.rm(Dir.glob('kmz_map/*.kmz'))
       stores = Store.where(area: area, registered_at: [8.days.ago..Time.now])
-      stores.find_in_batches(batch_size: 2000).with_index(1) do |group, i|
+      stores.find_in_batches(batch_size: 2000).with_index(1) do |stores_group, i|
         kml_file = "map/doc.kml"
         file = File.read(kml_file)
         @doc = Nokogiri::XML(file) do |config|
@@ -213,9 +213,16 @@ class Store < ApplicationRecord
         layer_name = @doc.xpath('//Folder/name').first
         layer_name.content = "#{DateTime.now.strftime('%-m月%d日%H時%M分')}現在_全#{stores.count}店舗_Part#{i}"
 
-        group.each do |store|
-          # TODO: 店舗URLもマップに追加したい
-          @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-0288D1</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+        stores_group.each do |store|
+          case store.star
+          when nil
+            # TODO: 店舗URLや評価を追加したい
+            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-0288D1-nodesc</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+          when 0..4.2
+            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-F57C00-nodesc-normal</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+          when 4.3..5
+            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-FF5252-nodesc-highlight</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+          end
         end
 
         f = File.new(kml_file, "w")
