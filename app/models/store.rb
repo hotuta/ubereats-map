@@ -216,12 +216,20 @@ class Store < ApplicationRecord
         stores_group.each do |store|
           case store.star
           when nil
-            # TODO: 店舗URLや評価を追加したい
-            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-0288D1-nodesc</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+            add_map_to_store(store, "icon-1739-0288D1-nodesc-normal")
           when 0..4.2
-            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-F57C00-nodesc-normal</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
-          when 4.3..5
-            @doc.at('Folder').add_child("<Placemark><styleUrl>#icon-1739-FF5252-nodesc-highlight</styleUrl><name>#{store.name}</name><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
+            add_map_to_store(store, "icon-1739-F57C00-nodesc-normal")
+          when 4.3..4.4
+            # 中評価
+            add_map_to_store(store, "icon-1739-FF5252-nodesc-normal")
+          when 4.5..5
+            if store.review < 150
+              # 高評価アンド150未満 icon-1577-FF5252-nodesc-normal
+              add_map_to_store(store, "icon-1577-FF5252-nodesc-normal")
+            elsif store.review >= 150
+              # 高評価アンド150評価以上 icon-1502-FF5252-nodesc-highlight
+              add_map_to_store(store, "icon-1502-FF5252-nodesc-highlight")
+            end
           end
         end
 
@@ -231,6 +239,10 @@ class Store < ApplicationRecord
 
         Archive::Zip.archive("kmz_map/part#{i}_edit_map.kmz", 'map/.')
       end
+    end
+
+    def add_map_to_store(store, style_url)
+      @doc.at('Folder').add_child("<Placemark><name>#{store.name}</name><description><![CDATA[評価#{store.star}<br>レビュー数#{store.review}<br>#{store.url}]]></description><styleUrl>##{style_url}</styleUrl><Point><coordinates>#{store.longitude}, #{store.latitude}</coordinates></Point></Placemark>")
     end
 
     def upload_kmz(map_url)
