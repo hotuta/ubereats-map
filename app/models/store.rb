@@ -270,6 +270,7 @@ class Store < ApplicationRecord
         puts "switch前"
         @session.switch_to_frame(:top)
         puts "switch後"
+        sleep 15
 
         # レイヤーを消す
         @delete_layer_xpath = "//div[@id='ly0-layer-header']/div[3]"
