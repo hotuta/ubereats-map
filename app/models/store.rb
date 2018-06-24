@@ -199,7 +199,7 @@ class Store < ApplicationRecord
 
     def parse_and_edit_kml(area)
       FileUtils.rm(Dir.glob('kmz_map/*.kmz'))
-      Store.where(area: area).find_in_batches(batch_size: 2000).with_index(1) do |group, i|
+      Store.where(area: area, registered_at: [8.days.ago..Time.now]).find_in_batches(batch_size: 2000).with_index(1) do |group, i|
         kml_file = "map/doc.kml"
         file = File.read(kml_file)
         @doc = Nokogiri::XML(file) do |config|
