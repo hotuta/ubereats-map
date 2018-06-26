@@ -216,19 +216,19 @@ class Store < ApplicationRecord
         stores_group.each do |store|
           case store.star
           when nil
-            add_map_to_store(store, "icon-1739-0288D1-nodesc-normal")
+            add_map_to_store(store, "icon-1739-0288D1-nodesc")
           when 0..4.2
-            add_map_to_store(store, "icon-1739-F57C00-nodesc-normal")
+            add_map_to_store(store, "icon-1739-F57C00-nodesc")
           when 4.3..4.4
             # 中評価
-            add_map_to_store(store, "icon-1739-FF5252-nodesc-normal")
+            add_map_to_store(store, "icon-1739-FF5252-nodesc")
           when 4.5..5
             if store.review < 200
               # 高評価アンド150未満 icon-1577-FF5252-nodesc-normal
-              add_map_to_store(store, "icon-1577-FF5252-nodesc-normal")
+              add_map_to_store(store, "icon-1577-FF5252-nodesc")
             elsif store.review >= 200
               # 高評価アンド150評価以上 icon-1502-FF5252-nodesc-highlight
-              add_map_to_store(store, "icon-1502-FF5252-nodesc-highlight")
+              add_map_to_store(store, "icon-1502-FF5252-nodesc")
             end
           end
         end
