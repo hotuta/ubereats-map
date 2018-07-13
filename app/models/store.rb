@@ -22,13 +22,7 @@ class Store < ApplicationRecord
     end
 
     def edit_osaka_mymaps
-      # FIXME: エリアマップが公開されたら修正する
-      @latitude_max = "34.757389".to_f
-      @latitude_min = "34.657389".to_f
-
-      @longitude_max = "135.588139".to_f
-      @longitude_min = "135.448139".to_f
-
+      @coordinates = JSON.load(File.read ("osaka_coordinates.json")).uniq
       get_stores("Osaka")
       parse_and_edit_kml("Osaka")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
