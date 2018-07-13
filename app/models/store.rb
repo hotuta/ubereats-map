@@ -23,6 +23,7 @@ class Store < ApplicationRecord
 
     def edit_osaka_mymaps
       @coordinates = JSON.load(File.read ("osaka_coordinates.json")).uniq
+      @latitude_min = ""
       get_stores("Osaka")
       parse_and_edit_kml("Osaka")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
@@ -30,6 +31,7 @@ class Store < ApplicationRecord
 
     def edit_kawasaki_mymaps
       @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
+      @latitude_min = ""
       # TODO: DBを分ける
       get_stores("Tokyo")
       parse_and_edit_kml("Tokyo")
