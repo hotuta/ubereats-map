@@ -14,6 +14,7 @@ class Store < ApplicationRecord
     end
 
     def edit_yokohama_mymaps
+      @coordinates = JSON.load(File.read ("yokohama_coordinates.json")).uniq
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1BAoMqt-4b8iEEbAIgP_MlqBskEs&forcekml=1'
       get_stores("Yokohama")
       parse_and_edit_kml("Yokohama")
