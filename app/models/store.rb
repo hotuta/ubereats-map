@@ -275,10 +275,12 @@ class Store < ApplicationRecord
 
       puts "KMZファイル#{kmz_files_count}個"
 
-      # 既に空のレイヤーが追加されている場合は削除する
-      @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
-      @delete_has_xpath = @delete_layer_xpath
-      delete_layer_has_xpath if kmz_files_count.present?
+      if kmz_files_count.present?
+        # 既に空のレイヤーが追加されている場合は削除する
+        @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
+        @delete_has_xpath = @delete_layer_xpath
+        delete_layer_has_xpath if kmz_files_count.present?
+      end
 
       kmz_files.sort.each do |filename|
         @session.find(:id, "map-action-add-layer").click
