@@ -318,7 +318,7 @@ class Store < ApplicationRecord
     end
 
     def delete_layer_has_xpath
-      loop do
+      5.times do
         @session.refresh
         sleep 15
         if @session.has_xpath?(@delete_has_xpath)
