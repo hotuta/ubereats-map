@@ -69,7 +69,9 @@ class Store < ApplicationRecord
     def dump_kyoto_coodinates
       @prefecture = "京都府"
       @target = "京都市"
-      get_coordinate
+      CSV.foreach('26_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+        @coordinates << [row["経度"], row["緯度"]] if row["市区町村名"] =~ /上京区|中京区|下京区|東山区/
+      end
       File.open("kyoto_coordinates.json", 'w') do |f|
         JSON.dump(@coordinates, f)
       end
