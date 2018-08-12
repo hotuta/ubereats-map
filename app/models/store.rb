@@ -66,6 +66,15 @@ class Store < ApplicationRecord
       end
     end
 
+    def dump_kyoto_coodinates
+      @prefecture = "京都府"
+      @target = "京都市"
+      get_coordinate
+      File.open("kyoto_coordinates.json", 'w') do |f|
+        JSON.dump(@coordinates, f)
+      end
+    end
+
     def dump_tokyo_coodinates
       @prefecture = "東京都"
       @target = ""
