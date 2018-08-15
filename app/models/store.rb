@@ -29,6 +29,14 @@ class Store < ApplicationRecord
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
     end
 
+    def edit_kyoto_mymaps
+      @coordinates = JSON.load(File.read ("kyoto_coordinates.json")).uniq
+      @latitude_min = ""
+      get_stores("Kyoto")
+      parse_and_edit_kml("Kyoto")
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1WsHLmO5jaHlZE6TZx5mPmOIUsWf15alx')
+    end
+
     def edit_kawasaki_mymaps
       @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
       @latitude_min = ""
