@@ -350,6 +350,7 @@ class Store < ApplicationRecord
       end
 
       @session.driver.quit
+      FileUtils.rm_rf('kmz_map/*.kmz')
     end
 
     def delete_layer(check_layer_num, remove_layer_num)
