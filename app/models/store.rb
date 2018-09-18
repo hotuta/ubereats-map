@@ -317,9 +317,7 @@ class Store < ApplicationRecord
 
       if kmz_files_count.present?
         # 既に空のレイヤーが追加されている場合は削除する
-        @delete_layer_xpath = "//div[@id='ly#{kmz_files_count}-layer-header']/div[3]"
-        @delete_has_xpath = @delete_layer_xpath
-        delete_layer_has_xpath if kmz_files_count.present?
+        delete_layer(kmz_files_count, kmz_files_count)
       end
 
       kmz_files.sort.each do |filename|
@@ -348,28 +346,20 @@ class Store < ApplicationRecord
         sleep 15
 
         # レイヤーを消す
-        @delete_layer_xpath = "//div[@id='ly0-layer-header']/div[3]"
-        delete_layer_has_xpath
+        delete_layer(kmz_files_count, 0)
       end
 
       @session.driver.quit
     end
 
-    def delete_layer_has_xpath
+    def delete_layer(check_layer_num, remove_layer_num)
       5.times do
         @session.refresh
-        sleep 15
-        if @session.has_xpath?(@delete_has_xpath)
-          puts @delete_layer_xpath
-          @session.find(:xpath, @delete_layer_xpath, visible: false).hover.click
-          sleep 5
-          puts "hoge"
+        if @session.has_xpath?("//div[@id='ly#{check_layer_num}-layer-header']/div[3]")
+          @session.find(:xpath, "//div[@id='ly#{remove_layer_num}-layer-header']/div[3]", visible: false).hover.click
           @session.all(:xpath, "//*[@id='layerview-menu']/div[2]/div", visible: false).first.hover.click
-          sleep 10
-          puts "hoge2"
           @session.find(:xpath, "//*[@id='cannot-undo-dialog']/div[3]/button[1]", visible: false).hover.click
-          puts "hoge3"
-          sleep 15
+          @session.has_xpath?('//*[@id="map-title-desc-bar"]/div//div[2]')
         else
           break
         end
