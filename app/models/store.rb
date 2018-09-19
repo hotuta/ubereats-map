@@ -26,7 +26,7 @@ class Store < ApplicationRecord
       @latitude_min = ""
       get_stores("Osaka")
       parse_and_edit_kml("Osaka")
-      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1h4ymDuwne5AULxnhEe9I4UlgZPf-NGbO')
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=17Yu56w6UlpNN8ETaXvRy8GFZNSvUejnw')
     end
 
     def edit_kyoto_mymaps
