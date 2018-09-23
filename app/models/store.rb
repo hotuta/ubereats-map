@@ -18,7 +18,7 @@ class Store < ApplicationRecord
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1BAoMqt-4b8iEEbAIgP_MlqBskEs&forcekml=1'
       get_stores("Yokohama")
       parse_and_edit_kml("Yokohama")
-      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1C8dBMymzR89lByKZFHw4GNEv_4les6-z')
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1RKGmhxLr-BEgznNaMrydSReYka820smc')
     end
 
     def edit_osaka_mymaps
