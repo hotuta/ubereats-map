@@ -14,5 +14,6 @@ module Clockwork
     Store.edit_yokohama_mymaps
     Store.edit_kyoto_mymaps
     Store.edit_kobe_mymaps
+    Store.edit_saitama_mymaps
   end
 end

@@ -45,6 +45,15 @@ class Store < ApplicationRecord
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1gOQSniVEZg96ICbXKjZPCI6DSo-F68kF')
     end
 
+    def edit_saitama_mymaps
+      @coordinates = JSON.load(File.read ("saitama_coordinates.json")).uniq
+      @latitude_min = ""
+      get_stores("Saitama")
+      parse_and_edit_kml("Saitama")
+      # 閲覧: https://www.google.com/maps/d/u/0/viewer?mid=1t4bdH5l_RdGl9wcDhVyrjRCbrRjPfgjM
+      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1t4bdH5l_RdGl9wcDhVyrjRCbrRjPfgjM')
+    end
+
     def edit_kawasaki_mymaps
       @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
       @latitude_min = ""
