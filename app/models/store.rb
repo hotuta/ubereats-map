@@ -93,6 +93,18 @@ class Store < ApplicationRecord
       end
     end
 
+    def dump_saitama_coodinates
+      # http://nlftp.mlit.go.jp/cgi-bin/isj/dls/_download_files.cgi
+      @prefecture = "埼玉県"
+      @target = "さいたま市"
+      CSV.foreach('11_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+        @coordinates << [row["経度"], row["緯度"]] if row["市区町村名"] =~ /大宮区|浦和区|中央区/ && row["大字町丁目名"] !~ /階$|二丁目$|三丁目$|四丁目$|五丁目$|六丁目$|七丁目$/
+      end
+      File.open("saitama_coordinates.json", 'w') do |f|
+        JSON.dump(@coordinates, f)
+      end
+    end
+
     def dump_kobe_coodinates
       @prefecture = "兵庫県"
       @target = "神戸市"
