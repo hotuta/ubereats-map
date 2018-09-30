@@ -358,13 +358,16 @@ class Store < ApplicationRecord
         @session.switch_to_frame(frame)
 
         file = File.join(Dir.pwd, filename)
-        @session.find(:xpath, "//*[@id='doclist']/div/div[4]/div[2]/div/div[2]/div/div/div[1]/div/div[2]/input[@type='file']", visible: false).send_keys file
+        @session.find(:xpath, "//*[@id='doclist']//input[@type='file']", visible: false).send_keys file
+        @session.has_no_css?('#doclist')
 
         sleep 15
         puts "switch前"
         @session.switch_to_frame(:top)
         puts "switch後"
         sleep 15
+
+        @session.has_xpath?('//*[@id="map-title-desc-bar"]/div//div[2]')
 
         # レイヤーを消す
         delete_layer(kmz_files_count, 0)
