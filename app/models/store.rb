@@ -125,6 +125,17 @@ class Store < ApplicationRecord
       end
     end
 
+    def dump_nagoya_coodinates
+      CSV.foreach('23_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+        if row["市区町村名"] =~ /中区|中村区|西区|北区|中川区|東区/ && row["大字町丁目名"] !~ /階$|二丁目$|三丁目$|四丁目$|五丁目$|六丁目$|七丁目$/ && row["街区符号・地番"].to_i < 100
+          @coordinates << [row["経度"], row["緯度"]]
+        end
+      end
+      File.open("nagoya_coordinates.json", 'w') do |f|
+        JSON.dump(@coordinates, f)
+      end
+    end
+
     def dump_tokyo_coodinates
       @prefecture = "東京都"
       @target = ""
