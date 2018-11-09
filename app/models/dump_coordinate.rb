@@ -1,4 +1,4 @@
-class CoordinateCSV
+class DumpCoordinate
   include ActiveModel::Model
   require 'csv'
 
