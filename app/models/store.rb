@@ -64,6 +64,17 @@ class Store < ApplicationRecord
       @coordinates = ""
     end
 
+    def edit_nagoya_mymaps
+      @coordinates = JSON.load(File.read ("nagoya_coordinates.json")).uniq
+      @latitude_min = ""
+      # TODO: DBを分ける
+      get_stores("Nagoya")
+      parse_and_edit_kml("Nagoya")
+      # TODO: muymapを準備
+      upload_kmz('https://www.google.com/maps/d/edit?mid=1eipn_E7BmO3w8uBDG0d4kZlPFgFF84g5')
+      @coordinates = ""
+    end
+
     def dump_kawasaki_coodinates
       @prefecture = "神奈川県"
       @target = "川崎"
