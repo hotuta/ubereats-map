@@ -379,7 +379,7 @@ class Store < ApplicationRecord
         @session.find(:id, "map-action-add-layer").click
         sleep 15
         @session.refresh
-        sleep 15
+        sleep 30
         layer_count = @session.all(:xpath, "//div[contains(@id, 'layer-header')]").count
         @session.find(:id, "ly#{layer_count - 1}-layerview-import-link").hover.click
         sleep 15
