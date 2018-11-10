@@ -381,6 +381,7 @@ class Store < ApplicationRecord
         @session.refresh
         sleep 30
         layer_count = @session.all(:xpath, "//div[contains(@id, 'layer-header')]").count
+        puts "#{layer_count-1}個レイヤーがあるはず"
         @session.find(:id, "ly#{layer_count - 1}-layerview-import-link").hover.click
         sleep 15
 
