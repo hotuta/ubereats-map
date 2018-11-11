@@ -413,6 +413,8 @@ class Store < ApplicationRecord
     end
 
     def delete_layer(check_layer_num, remove_layer_num)
+      puts "delete_layer(#{check_layer_num}, #{remove_layer_num})"
+
       5.times do
         @session.refresh
         if @session.has_xpath?("//div[@id='ly#{check_layer_num}-layer-header']/div[3]")
