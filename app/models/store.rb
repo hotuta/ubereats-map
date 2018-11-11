@@ -8,7 +8,7 @@ class Store < ApplicationRecord
       @coordinates = JSON.load(File.read ("tokyo_coordinates.json")).uniq
       # https://www.google.com/maps/d/u/0/viewer?mid=1Xuly26goLsPFmF_ehhmefrWdyV8
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
-      get_stores("Tokyo")
+      get_stores("Tokyo", true)
       parse_and_edit_kml("Tokyo")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1od9QQ7nHpAix1RT31g1LBDvm94lCtzNL')
     end
@@ -16,14 +16,13 @@ class Store < ApplicationRecord
     def edit_yokohama_mymaps
       @coordinates = JSON.load(File.read ("yokohama_coordinates.json")).uniq
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1BAoMqt-4b8iEEbAIgP_MlqBskEs&forcekml=1'
-      get_stores("Yokohama")
+      get_stores("Yokohama", true)
       parse_and_edit_kml("Yokohama")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1RKGmhxLr-BEgznNaMrydSReYka820smc')
     end
 
     def edit_osaka_mymaps
       @coordinates = JSON.load(File.read ("osaka_coordinates.json")).uniq
-      @latitude_min = ""
       get_stores("Osaka")
       parse_and_edit_kml("Osaka")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=17Yu56w6UlpNN8ETaXvRy8GFZNSvUejnw')
@@ -31,7 +30,6 @@ class Store < ApplicationRecord
 
     def edit_kyoto_mymaps
       @coordinates = JSON.load(File.read ("kyoto_coordinates.json")).uniq
-      @latitude_min = ""
       get_stores("Kyoto")
       parse_and_edit_kml("Kyoto")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1v1y65uFlg4ZZ9rV2PKjqjeh0uxFr2q7d')
@@ -39,7 +37,6 @@ class Store < ApplicationRecord
 
     def edit_kobe_mymaps
       @coordinates = JSON.load(File.read ("kobe_coordinates.json")).uniq
-      @latitude_min = ""
       get_stores("Kobe")
       parse_and_edit_kml("Kobe")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1gOQSniVEZg96ICbXKjZPCI6DSo-F68kF')
@@ -47,7 +44,6 @@ class Store < ApplicationRecord
 
     def edit_saitama_mymaps
       @coordinates = JSON.load(File.read ("saitama_coordinates.json")).uniq
-      @latitude_min = ""
       get_stores("Saitama")
       parse_and_edit_kml("Saitama")
       # 閲覧: https://www.google.com/maps/d/u/0/viewer?mid=1t4bdH5l_RdGl9wcDhVyrjRCbrRjPfgjM
@@ -55,24 +51,18 @@ class Store < ApplicationRecord
     end
 
     def edit_kawasaki_mymaps
-      @coordinates = JSON.load(File.read ("kawasaki_coordinates.json"))
-      @latitude_min = ""
+      @coordinates = JSON.load(File.read ("kawasaki_coordinates.json")).uniq
       # TODO: DBを分ける
       get_stores("Tokyo")
       parse_and_edit_kml("Tokyo")
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
-      @coordinates = ""
     end
 
     def edit_nagoya_mymaps
       @coordinates = JSON.load(File.read ("nagoya_coordinates.json")).uniq
-      @latitude_min = ""
-      # TODO: DBを分ける
       get_stores("Nagoya")
       parse_and_edit_kml("Nagoya")
-      # TODO: muymapを準備
       upload_kmz('https://www.google.com/maps/d/edit?mid=1eipn_E7BmO3w8uBDG0d4kZlPFgFF84g5')
-      @coordinates = ""
     end
 
     def dump_kawasaki_coodinates
@@ -223,32 +213,21 @@ class Store < ApplicationRecord
       end
     end
 
-    def get_stores(area)
+    def get_stores(area, maps_coordinates = false)
       latitude_array = []
       longitude_array = []
 
-      if @coordinates.present?
-        puts "coordinates"
-        if @latitude_min.present?
-          @coordinates.sort.each do |longitude, latitude|
-            if longitude.to_f.between?(@longitude_min, @longitude_max) && latitude.to_f.between?(@latitude_min, @latitude_max)
-              longitude_array << longitude.to_f
-              latitude_array << latitude.to_f
-            end
-          end
-        else
-          @coordinates.sort.each do |longitude, latitude|
+      if maps_coordinates.present?
+        @coordinates.sort.each do |longitude, latitude|
+          if longitude.to_f.between?(@longitude_min, @longitude_max) && latitude.to_f.between?(@latitude_min, @latitude_max)
             longitude_array << longitude.to_f
             latitude_array << latitude.to_f
           end
         end
       else
-        puts "latitude"
-        @latitude_min.step(@latitude_max, 0.008) do |latitude|
-          latitude_array << latitude
-        end
-        @longitude_min.step(@longitude_max, 0.008) do |longitude|
-          longitude_array << longitude
+        @coordinates.sort.each do |longitude, latitude|
+          longitude_array << longitude.to_f
+          latitude_array << latitude.to_f
         end
       end
 
