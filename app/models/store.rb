@@ -373,6 +373,7 @@ class Store < ApplicationRecord
 
         file = File.join(Dir.pwd, filename)
         @session.find(:xpath, "//*[@id='doclist']//input[@type='file']", visible: false).send_keys file
+        sleep 30
         @session.has_no_css?('#doclist')
 
         sleep 15
