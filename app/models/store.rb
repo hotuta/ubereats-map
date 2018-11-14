@@ -286,7 +286,7 @@ class Store < ApplicationRecord
 
     def parse_and_edit_kml(area)
       FileUtils.rm(Dir.glob('kmz_map/*.kmz'))
-      stores = Store.where(area: area, registered_at: [8.days.ago..Time.now])
+      stores = Store.where(area: area, registered_at: [15.days.ago..Time.now])
       stores.find_in_batches(batch_size: 2000).with_index(1) do |stores_group, i|
         kml_file = "map/doc.kml"
         file = File.read(kml_file)
