@@ -235,16 +235,16 @@ class Store < ApplicationRecord
 
       bodies = []
       latitude_array.zip(longitude_array).each do |latitude, longitude|
-        bodies << {targetLocation: {latitude: latitude, longitude: longitude}, feedTypes: ["STORE", "SEE_ALL_STORES"]}
+        bodies << {targetLocation: {latitude: latitude, longitude: longitude},"hashes":{"stores":""}}
       end
 
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
         Parallel.each(bodies, in_processes: 4) do |body|
           sleep 2
 
-          predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions') {|predictions_response| predictions_response}
-          header = {x_csrf_token: predictions_res.headers[:x_csrf_token], content_type: 'application/json', Connection: 'keep-alive', cookies: predictions_res.cookies}
-          res = RestClient.post('https://www.ubereats.com/rtapi/eats/v1/bootstrap-eater', body.to_json, header) {|response| response}
+        predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions', {x_requested_with: 'XMLHttpRequest'}) {|predictions_response| predictions_response}
+        header = {x_csrf_token: predictions_res.headers[:x_csrf_token], content_type: 'application/json', x_requested_with: 'XMLHttpRequest', Connection: 'keep-alive', cookies: predictions_res.cookies}
+        res = RestClient.post('https://www.ubereats.com/rtapi/eats/v2/marketplaces', body.to_json, header) {|response| response}
 
           json = res.body
           hash = JSON.parse(json) rescue next
