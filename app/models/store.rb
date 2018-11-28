@@ -149,6 +149,29 @@ class Store < ApplicationRecord
       end
     end
 
+    def dump_fukuoka_coodinates
+      CSV.foreach('40_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+        if row["市区町村名"] =~ /博多区|中央区|南区|城南区/
+          @coordinates << [row["経度"], row["緯度"]]
+        end
+      end
+
+      longitude_min = @coordinates.map(&:first).min.to_f
+      longitude_max = @coordinates.map(&:first).max.to_f
+
+      latitude_min = @coordinates.map(&:last).min.to_f
+      latitude_max = @coordinates.map(&:last).max.to_f
+
+      File.open("fukuoka_coordinates.json", 'w') do |f|
+        interval_coordinates = CSV.read('福岡県1km毎_重複削除.csv', headers: true).map do |row|
+          if row['Long'].to_f.between?(longitude_min, longitude_max) && row['Lat'].to_f.between?(latitude_min, latitude_max)
+            [row['Long'], row['Lat']]
+          end
+        end.compact
+        JSON.dump(interval_coordinates, f)
+      end
+    end
+
     def dump_tokyo_coodinates
       @prefecture = "東京都"
       @target = ""
