@@ -65,6 +65,13 @@ class Store < ApplicationRecord
       upload_kmz('https://www.google.com/maps/d/edit?mid=1eipn_E7BmO3w8uBDG0d4kZlPFgFF84g5')
     end
 
+    def edit_fukuoka_mymaps
+      @coordinates = JSON.load(File.read ("fukuoka_coordinates.json")).uniq
+      get_stores("Fukuoka")
+      parse_and_edit_kml("Fukuoka")
+      upload_kmz('https://www.google.com/maps/d/edit?mid=18G0i2D_09yKpqfecH-BSOMLQhU9_r8VN')
+    end
+
     def dump_kawasaki_coodinates
       @prefecture = "神奈川県"
       @target = "川崎"
