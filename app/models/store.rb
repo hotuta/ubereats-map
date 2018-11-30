@@ -100,13 +100,23 @@ class Store < ApplicationRecord
     end
 
     def dump_kyoto_coodinates
-      @prefecture = "京都府"
-      @target = "京都市"
       CSV.foreach('26_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
-        @coordinates << [row["経度"], row["緯度"]] if row["市区町村名"] =~ /上京区|中京区|下京区|東山区/ && row["大字町丁目名"] !~ /階$|二丁目$|三丁目$|四丁目$|五丁目$|六丁目$|七丁目$/
+        @coordinates << [row["経度"], row["緯度"]] if row["市区町村名"] =~ /上京区|中京区|下京区|東山区|左京区|北区/
       end
+
+      longitude_min = @coordinates.map(&:first).min.to_f
+      longitude_max = @coordinates.map(&:first).max.to_f
+
+      latitude_min = @coordinates.map(&:last).min.to_f
+      latitude_max = @coordinates.map(&:last).max.to_f
+
       File.open("kyoto_coordinates.json", 'w') do |f|
-        JSON.dump(@coordinates, f)
+        interval_coordinates = CSV.read('26kyoto1km.csv', headers: true).uniq.map do |row|
+          if row['Long'].to_f.between?(longitude_min, longitude_max) && row['Lat'].to_f.between?(latitude_min, latitude_max)
+            [row['Long'], row['Lat']]
+          end
+        end.compact
+        JSON.dump(interval_coordinates, f)
       end
     end
 
