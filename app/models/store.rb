@@ -91,11 +91,23 @@ class Store < ApplicationRecord
     end
 
     def dump_osaka_coodinates
-      @prefecture = "大阪府"
-      @target = "大阪市"
-      get_coordinate
+      CSV.foreach('27_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+        @coordinates << [row["経度"], row["緯度"]] if row["市区町村名"] =~ /中央区|北区|西区|浪速区|天王寺区|福島区|都島区|阿倍野区|西成区|大正区|淀川区|東成区|城東区|生野区|住吉区|東淀川区|鶴見区|旭区|東住吉区|平野区/
+      end
+
+      longitude_min = @coordinates.map(&:first).min.to_f
+      longitude_max = @coordinates.map(&:first).max.to_f
+
+      latitude_min = @coordinates.map(&:last).min.to_f
+      latitude_max = @coordinates.map(&:last).max.to_f
+
       File.open("osaka_coordinates.json", 'w') do |f|
-        JSON.dump(@coordinates, f)
+        interval_coordinates = CSV.read('27osaka1km.csv', headers: true).uniq.map do |row|
+          if row['Long'].to_f.between?(longitude_min, longitude_max) && row['Lat'].to_f.between?(latitude_min, latitude_max)
+            [row['Long'], row['Lat']]
+          end
+        end.compact
+        JSON.dump(interval_coordinates, f)
       end
     end
 
