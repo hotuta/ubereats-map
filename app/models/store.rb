@@ -180,18 +180,19 @@ class Store < ApplicationRecord
     end
 
     def dump_tokyo_coodinates
-      @prefecture = "東京都"
-      @target = ""
-      get_coordinate
-      CSV.foreach('tokyo.csv') do |row|
-        row[1] = row[1].gsub(/１|２|３|４|５|６|７|８|９|一ッ橋/, "１" => "一", "２" => "二", "３" => "三", "４" => "四", "５" => "五", "６" => "六", "７" => "七", "８" => "八", "９" => "九", "一ッ橋" => "一ツ橋")
-        towns = get_res_to_obj("http://geoapi.heartrails.com/api/json", {params: {method: 'suggest', matching: 'suffix', keyword: row[0] + row[1]}}).location
-        towns.each do |town|
-          @coordinates << [town.x, town.y]
-        end
+      CSV.foreach('13_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
+          @coordinates << [row["経度"], row["緯度"]]
       end
+
+      get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
+
       File.open("tokyo_coordinates.json", 'w') do |f|
-        JSON.dump(@coordinates, f)
+        interval_coordinates = CSV.read('13tokyo1km.csv', headers: true).uniq.map do |row|
+          if row['Long'].to_f.between?(@longitude_min, @longitude_max) && row['Lat'].to_f.between?(@latitude_min, @latitude_max)
+            [row['Long'], row['Lat']]
+          end
+        end.compact
+        JSON.dump(interval_coordinates, f)
       end
     end
 
