@@ -192,7 +192,7 @@ class Store < ApplicationRecord
       latitude_max = @coordinates.map(&:last).max.to_f
 
       File.open("fukuoka_coordinates.json", 'w') do |f|
-        interval_coordinates = CSV.read('福岡県1km毎_重複削除.csv', headers: true).map do |row|
+        interval_coordinates = CSV.read('40fukuoka1km.csv', headers: true).uniq.map do |row|
           if row['Long'].to_f.between?(longitude_min, longitude_max) && row['Lat'].to_f.between?(latitude_min, latitude_max)
             [row['Long'], row['Lat']]
           end
