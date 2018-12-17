@@ -133,7 +133,7 @@ class Store < ApplicationRecord
     end
 
     def dump_saitama_coodinates
-      # http://nlftp.mlit.go.jp/cgi-bin/isj/dls/_download_files.cgi
+      # http://nlftp.mlit.go.jp/cgi-bin/isj/dls/_view_prefecturesmap.cgi
       @prefecture = "埼玉県"
       @target = "さいたま市"
       CSV.foreach('11_2017.csv', headers: true, encoding: "Shift_JIS:UTF-8") do |row|
