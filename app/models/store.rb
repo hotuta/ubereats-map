@@ -10,7 +10,7 @@ class Store < ApplicationRecord
       get_maps 'https://www.google.com/maps/d/u/0/kml?mid=1Xuly26goLsPFmF_ehhmefrWdyV8&forcekml=1'
       get_stores("Tokyo", true)
       parse_and_edit_kml("Tokyo")
-      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1od9QQ7nHpAix1RT31g1LBDvm94lCtzNL')
+      upload_kmz('https://www.google.com/maps/d/edit?mid=1d_PkKwc5xU4SWjPd7rtICEFEGvmRmaTU')
     end
 
     def edit_yokohama_mymaps
@@ -55,7 +55,7 @@ class Store < ApplicationRecord
       # TODO: DBを分ける
       get_stores("Tokyo")
       parse_and_edit_kml("Tokyo")
-      upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1f3HXzjohfLSD5VZC4YoVUMOqGFO0CGR8')
+      upload_kmz('https://www.google.com/maps/d/edit?mid=1d_PkKwc5xU4SWjPd7rtICEFEGvmRmaTU')
     end
 
     def edit_nagoya_mymaps
