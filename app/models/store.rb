@@ -50,6 +50,12 @@ class Store < ApplicationRecord
       upload_kmz('https://www.google.com/maps/d/u/0/edit?mid=1t4bdH5l_RdGl9wcDhVyrjRCbrRjPfgjM')
     end
 
+    def get_kawasaki_data
+      @coordinates = JSON.load(File.read ("kawasaki_coordinates.json")).uniq
+      # TODO: DBを分ける
+      get_stores("Tokyo")
+    end
+
     def edit_kawasaki_mymaps
       @coordinates = JSON.load(File.read ("kawasaki_coordinates.json")).uniq
       # TODO: DBを分ける
