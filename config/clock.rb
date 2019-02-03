@@ -7,7 +7,7 @@ module Clockwork
     puts "Running #{job}"
   end
 
-  every(1.hours, 'Store') do
+  every(1.day, 'Store', at: ['4:00']) do
     # Store.edit_kawasaki_mymaps
     Store.edit_tokyo_mymaps
     Store.edit_osaka_mymaps
