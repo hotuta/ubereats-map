@@ -7,6 +7,10 @@ module Clockwork
     puts "Running #{job}"
   end
 
+  # MEMO: タイムゾーン対応をしようとしたが、ClockWorkが正常に実行できていない恐れが高い
+  # TODO: Heroku標準のスケジューラーで定期実行処理を実行することにする
+  # TODO: rakeファイルを作る
+
   # TODO: コメントアウトしたい。暫定として、20時間毎に定期実行することにして緊急対処。
   # every(20.hours, 'Store') do
   #   Store.get_kawasaki_data

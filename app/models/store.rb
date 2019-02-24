@@ -86,6 +86,7 @@ class Store < ApplicationRecord
         JSON.dump(@coordinates, f)
       end
     end
+    # TODO: 他エリアも取得用座標を削減する
 
     def dump_yokohama_coodinates
       @prefecture = "神奈川県"
@@ -297,46 +298,47 @@ class Store < ApplicationRecord
         bodies << {targetLocation: {latitude: latitude, longitude: longitude},"hashes":{"stores":""}}
       end
 
-      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        Parallel.each(bodies, in_processes: 4) do |body|
-          sleep 2
+      bodies.each do |body|
+        sleep 2
 
         predictions_res = RestClient.get('https://www.ubereats.com/rtapi/locations/v2/predictions', {x_requested_with: 'XMLHttpRequest'}) {|predictions_response| predictions_response}
         header = {x_csrf_token: predictions_res.headers[:x_csrf_token], content_type: 'application/json', x_requested_with: 'XMLHttpRequest', Connection: 'keep-alive', cookies: predictions_res.cookies}
         res = RestClient.post('https://www.ubereats.com/rtapi/eats/v2/marketplaces', body.to_json, header) {|response| response}
 
-          json = res.body
-          hash = JSON.parse(json) rescue next
-          next if hash["marketplace"]["feed"].empty? rescue nil
-          parsed = hash["marketplace"]["feed"]["storesMap"] rescue nil
-          next if parsed.empty? rescue nil
-          next if parsed.nil?
+        json = res.body
 
-          stores = []
-          parsed.each.with_index(1) do |store|
-            stores_hash = store[1]
-            store = Store.new
-            store.area = area
-            store.url = "https://www.ubereats.com/stores/#{stores_hash["uuid"]}"
-            store.name = stores_hash["title"].gsub(/'/, "''")
-            store.coordinates = "#{stores_hash["location"]["latitude"]},#{stores_hash["location"]["longitude"]}"
-            store.latitude = stores_hash["location"]["latitude"]
-            store.longitude = stores_hash["location"]["longitude"]
-            store.registered_at = time
-            if stores_hash["ratingBadge"].present?
-              rating = stores_hash["ratingBadge"]["accessibilityText"]
-              store.review = rating.match(/([0-9]+) reviews./)[1]
-              store.star = rating.match(/(([0-9]\d*|0)(\.\d+)?) out/)[1]
-            end
-            stores << store
+        # binding.pry
+
+        hash = JSON.parse(json) rescue next
+        next if hash["marketplace"]["feed"].empty? rescue nil
+        parsed = hash["marketplace"]["feed"]["storesMap"] rescue nil
+        next if parsed.empty? rescue nil
+        next if parsed.nil?
+
+        stores = []
+        parsed.each.with_index(1) do |store|
+          stores_hash = store[1]
+          store = Store.new
+          store.area = area
+          store.url = "https://www.ubereats.com/stores/#{stores_hash["uuid"]}"
+          store.name = stores_hash["title"].gsub(/'/, "''")
+          store.coordinates = "#{stores_hash["location"]["latitude"]},#{stores_hash["location"]["longitude"]}"
+          store.latitude = stores_hash["location"]["latitude"]
+          store.longitude = stores_hash["location"]["longitude"]
+          store.registered_at = time
+          if stores_hash["ratingBadge"].present?
+            rating = stores_hash["ratingBadge"]["accessibilityText"]
+            store.review = rating.match(/([0-9]+) reviews./)[1]
+            store.star = rating.match(/(([0-9]\d*|0)(\.\d+)?) out/)[1]
           end
+          stores << store
+        end
 
-          columns = Store.column_names - ["id", "url", "created_at", "updated_at"]
-          Concurrent::Future.execute do
-            ActiveRecord::Base.connection_pool.with_connection do
-              Rails.application.executor.wrap do
-                Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: columns}
-              end
+        columns = Store.column_names - ["id", "url", "created_at", "updated_at"]
+        Concurrent::Future.execute do
+          ActiveRecord::Base.connection_pool.with_connection do
+            Rails.application.executor.wrap do
+              Store.import stores, recursive: true, on_duplicate_key_update: {conflict_target: [:url], columns: columns}
             end
           end
         end
@@ -400,6 +402,8 @@ class Store < ApplicationRecord
       end
       @session.visit map_url
 
+
+
       # FIXME: sleepは暫定措置
       sleep 15
 
@@ -408,12 +412,19 @@ class Store < ApplicationRecord
 
       puts "KMZファイル#{kmz_files_count}個"
 
+      binding.pry
+
+
       if kmz_files_count.present?
         # 既に空のレイヤーが追加されている場合は削除する
         delete_layer(kmz_files_count, kmz_files_count)
       end
 
+
+
       kmz_files.sort.each do |filename|
+        binding.pry
+
         @session.find(:id, "map-action-add-layer").click
         sleep 15
         @session.refresh
